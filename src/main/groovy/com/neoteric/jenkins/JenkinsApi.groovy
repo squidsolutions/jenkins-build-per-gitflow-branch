@@ -103,7 +103,7 @@ class JenkinsApi {
 			root.scm.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0].value = "$gitUrl"
 		}
 		// The template uses multiple GIT repos. Modify the URL of the first one and the branch of all of them
-		else if (root.scm.scms !=null)
+		else if (root.scm.scms !=null) {
 			// update branch name
 			root.scm.scms.each {
 				it."hudson.plugins.git.GitSCM".branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
