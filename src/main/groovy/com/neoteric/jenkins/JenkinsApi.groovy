@@ -95,7 +95,6 @@ class JenkinsApi {
 		
 			// The template uses only one Git repo
 			if (root.scm.scms == null) {
-				println "DEBUG unique GIT repo"
 				// update branch name
 				root.scm.branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
 				
@@ -104,7 +103,6 @@ class JenkinsApi {
 			}
 			// The template uses multiple GIT repos. Modify the URL of the first one and the branch of all of them
 			else if (root.scm.scms !=null) {
-				println "DEBUG multiple GIT repo"
 				// update branch name
 				root.scm.scms."hudson.plugins.git.GitSCM".each {
 					// println it.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0]
@@ -126,17 +124,17 @@ class JenkinsApi {
 		Node startOnCreateParam = findStartOnCreateParameter(root)
 		if (startOnCreateParam) {
 			startOnCreateParam.parent().remove(startOnCreateParam)
+		
+			//check if it was the only parameter - if so, remove the enclosing tag, so the project won't be seen as build with parameters
+			def propertiesNode = root.properties
+			def parameterDefinitionsProperty = propertiesNode."hudson.model.ParametersDefinitionProperty".parameterDefinitions[0]
+			
+			if(!parameterDefinitionsProperty.attributes() && !parameterDefinitionsProperty.children() && !parameterDefinitionsProperty.text()) {
+				root.remove(propertiesNode)
+				new Node(root, 'properties')
+			}
+		
 		}
-		
-		//check if it was the only parameter - if so, remove the enclosing tag, so the project won't be seen as build with parameters
-		def propertiesNode = root.properties
-		def parameterDefinitionsProperty = propertiesNode."hudson.model.ParametersDefinitionProperty".parameterDefinitions[0]
-		
-		if(!parameterDefinitionsProperty.attributes() && !parameterDefinitionsProperty.children() && !parameterDefinitionsProperty.text()) {
-			root.remove(propertiesNode)
-			new Node(root, 'properties')
-		}
-		
 		
 		def writer = new StringWriter()
 		XmlNodePrinter xmlPrinter = new XmlNodePrinter(new PrintWriter(writer))

@@ -94,6 +94,7 @@ class JenkinsJobManager {
 
 			println "---> Found corresponding branches: $branchesWithCorrespondingTemplate"
 			branchesWithCorrespondingTemplate.each { branchToProcess ->
+				branchToProcess.replaceAll('/', '_')
 				println "-----> Processing branch: $branchToProcess"
 				List<ConcreteJob> expectedJobsPerBranch = templateJobsByBranch[templateBranchToProcess].collect { TemplateJob templateJob ->
 					templateJob.concreteJobForBranch(jobPrefix, branchToProcess)
