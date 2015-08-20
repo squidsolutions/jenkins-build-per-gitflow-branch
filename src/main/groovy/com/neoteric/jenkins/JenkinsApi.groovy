@@ -95,6 +95,7 @@ class JenkinsApi {
 		
 			// The template uses only one Git repo
 			if (root.scm.scms == null) {
+				println "DEBUG unique GIT repo"
 				// update branch name
 				root.scm.branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
 				
@@ -103,9 +104,11 @@ class JenkinsApi {
 			}
 			// The template uses multiple GIT repos. Modify the URL of the first one and the branch of all of them
 			else if (root.scm.scms !=null) {
+				println "DEBUG multiple GIT repo"
 				// update branch name
-				root.scm.scms.each {
-					it."hudson.plugins.git.GitSCM".branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
+				root.scm.scms."hudson.plugins.git.GitSCM".each {
+					// println it.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0]
+					it.branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
 				}
 				// update GIT url
 				root.scm.scms[0]."hudson.plugins.git.GitSCM".userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0].value = "$gitUrl"
