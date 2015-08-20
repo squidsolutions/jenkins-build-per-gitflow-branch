@@ -94,14 +94,13 @@ class JenkinsJobManager {
 
 			println "---> Found corresponding branches: $branchesWithCorrespondingTemplate"
 			branchesWithCorrespondingTemplate.each { branchToProcess ->
-				branchToProcess.replaceAll('/', '_')
 				println "-----> Processing branch: $branchToProcess"
 				List<ConcreteJob> expectedJobsPerBranch = templateJobsByBranch[templateBranchToProcess].collect { TemplateJob templateJob ->
 					templateJob.concreteJobForBranch(jobPrefix, branchToProcess)
 				}
 				println "-------> Expected jobs:"
 				expectedJobsPerBranch.each { println "           $it" }
-				List<String> jobNamesPerBranch = jobNames.findAll{ it.endsWith(branchToProcess) }
+				List<String> jobNamesPerBranch = jobNames.findAll{ it.endsWith(branchToProcess.replaceAll('/', '_')) }
 				println "-------> Job Names per branch:"
 				jobNamesPerBranch.each { println "           $it" }
 				List<ConcreteJob> missingJobsPerBranch = expectedJobsPerBranch.findAll { expectedJob ->
