@@ -95,6 +95,7 @@ class JenkinsApi {
 		
 			// The template uses only one Git repo
 			if ( root.scm.getAt("scms") != null ) {
+				println "WHY ???" + root.scm
 				// update branch name
 				root.scm.scms."hudson.plugins.git.GitSCM".each {
 					// println it.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0]
