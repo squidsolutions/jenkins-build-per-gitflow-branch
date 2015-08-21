@@ -91,10 +91,11 @@ class JenkinsApi {
 	public String processConfig(String entryConfig, String branchName, String gitUrl) {
 		def root = new XmlParser().parseText(entryConfig)
 		// The template doesn't use any GIT repo. Error !
-		if (! root.contains(groovy.util.NodeList.new("scm"))) {
+		if (! root.contains("scm")) {
 		
 			// The template uses only one Git repo
-			if (! root.scm.contains(groovy.util.NodeList.new("scms"))) {
+			if (! root.scm.contains("scms")) {
+				println "DEBUG 1 " + root.scm
 				// update branch name
 				root.scm.branches."hudson.plugins.git.BranchSpec".name[0].value = "*/$branchName"
 				
@@ -102,7 +103,8 @@ class JenkinsApi {
 				root.scm.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0].value = "$gitUrl"
 			}
 			// The template uses multiple GIT repos. Modify the URL of the first one and the branch of all of them
-			else if (root.scm.contains(groovy.util.NodeList.new("scms"))) {
+			else if (root.scm.contains("scms")) {
+				println "DEBUG 2 " + root.scm
 				// update branch name
 				root.scm.scms."hudson.plugins.git.GitSCM".each {
 					// println it.userRemoteConfigs."hudson.plugins.git.UserRemoteConfig".url[0]
